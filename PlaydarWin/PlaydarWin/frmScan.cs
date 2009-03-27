@@ -30,7 +30,7 @@ namespace PlaydarWin
         {
             this.Cursor = Cursors.Default;
             frmMain.notifyIcon1.ShowBalloonTip(5000, "Playdar Scanner", "File scanning has completed. You may now launch Playdar.", ToolTipIcon.Info);
-            this.Close();
+            this.richTextBox1.AppendText(Environment.NewLine + "Playdar scanner completed. Review these results if you wish, then click 'Start Playdar'");
         }
 
         private void frmScan_Load(object sender, EventArgs e)
@@ -43,8 +43,8 @@ namespace PlaydarWin
             folderBrowserDialog1.ShowDialog();
 
             processCaller = new ProcessCaller(this);
-            processCaller.WorkingDirectory = "C:/program files/playdar/";
-            processCaller.FileName = @"C:/program files/playdar/scanner.exe";
+            processCaller.WorkingDirectory = Environment.GetEnvironmentVariable("ProgramFiles") + @"\Playdar\";
+            processCaller.FileName = Environment.GetEnvironmentVariable("ProgramFiles") + @"\Playdar\playdar-scanner.exe";
             processCaller.Arguments = "collection.db \"" + folderBrowserDialog1.SelectedPath + "\"";
             processCaller.StdErrReceived += new DataReceivedHandler(writeStreamInfo);
             processCaller.StdOutReceived += new DataReceivedHandler(writeStreamInfo);

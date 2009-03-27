@@ -10,8 +10,8 @@ bin\Release\PlaydarWin.exe
 bin\Release\PlaydarWin.pdb
 obj\Release\ResolveAssemblyReference.cache
 obj\Release\PlaydarWin.frmMain.resources
+obj\Release\PlaydarWin.frmScan.resources
 obj\Release\PlaydarWin.Properties.Resources.resources
 obj\Release\PlaydarWin.csproj.GenerateResource.Cache
 obj\Release\PlaydarWin.exe
 obj\Release\PlaydarWin.pdb
-obj\Release\PlaydarWin.frmScan.resources

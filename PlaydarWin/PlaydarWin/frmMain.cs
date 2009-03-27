@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Security.Principal;
+using System.Diagnostics;
 
 namespace PlaydarWin
 {
@@ -54,7 +55,22 @@ namespace PlaydarWin
                     this.richTextBox1.SelectionColor = Color.Red;
                     this.richTextBox1.SelectedText = e.Text + Environment.NewLine;
                 }
+                if (e.Text.Contains("No matches for:"))
+                {
+                    this.richTextBox1.SelectionColor = Color.Red;
+                    this.richTextBox1.SelectedText = e.Text + Environment.NewLine;
+                }
                 else if (e.Text.Contains("ACCEPTED")) {
+                    this.richTextBox1.SelectionColor = Color.Green;
+                    this.richTextBox1.SelectedText = e.Text + Environment.NewLine;
+                }
+                else if (e.Text.Contains("RESOLVER add_results"))
+                {
+                    this.richTextBox1.SelectionColor = Color.Green;
+                    this.richTextBox1.SelectedText = e.Text + Environment.NewLine;
+                }
+                else if (e.Text.Contains("LAN_UDP responding for "))
+                {
                     this.richTextBox1.SelectionColor = Color.Green;
                     this.richTextBox1.SelectedText = e.Text + Environment.NewLine;
                 }
@@ -99,18 +115,18 @@ namespace PlaydarWin
 
         private void btnOk_Click_1(object sender, EventArgs e)
         {
-            if (!File.Exists("C:/program files/playdar/playdar.exe"))
+            if (!File.Exists(Environment.GetEnvironmentVariable("ProgramFiles") + @"\Playdar\playdar.exe"))
             {
-                MessageBox.Show("The Playdar executable could not be found. "+ Environment.NewLine + "I am currently looking in: "+ Environment.NewLine + @"C:\Program Files\Playdar\playdar.exe"+ Environment.NewLine + Environment.NewLine + "Please ensure the executable is there.","Playdar Critical Error",MessageBoxButtons.OK,MessageBoxIcon.Stop);
+                MessageBox.Show("The Playdar executable could not be found. "+ Environment.NewLine + "I am currently looking in: "+ Environment.NewLine + Environment.GetEnvironmentVariable("ProgramFiles") + @"\Playdar\playdar.exe"+ Environment.NewLine + Environment.NewLine + "Please ensure the executable is there.","Playdar Critical Error",MessageBoxButtons.OK,MessageBoxIcon.Stop);
                 Close();
             }
             this.Cursor = Cursors.AppStarting;
             this.btnOk.Enabled = false;
 
             processCaller = new ProcessCaller(this);
-            processCaller.WorkingDirectory = "C:/program files/playdar/";
-            processCaller.FileName = @"C:/program files/playdar/playdar.exe";
-            processCaller.Arguments = "-c playdar.ini --app.name \"" + WindowsIdentity.GetCurrent().Name +  "\" ";
+            processCaller.WorkingDirectory = Environment.GetEnvironmentVariable("ProgramFiles") + @"\Playdar\";
+            processCaller.FileName = Environment.GetEnvironmentVariable("ProgramFiles") + @"\Playdar\playdar.exe";
+            processCaller.Arguments = "-c playdar.conf";
             processCaller.StdErrReceived += new DataReceivedHandler(writeStreamInfo);
             processCaller.StdOutReceived += new DataReceivedHandler(writeStreamInfo);
             processCaller.Completed += new EventHandler(processCompletedOrCanceled);
@@ -157,6 +173,10 @@ namespace PlaydarWin
         private void frmMain_Close(object sender, System.EventArgs e)
         {
             // TODO: we should probably kill playdar here, 
+            // so er, this might work. let's try. 
+            Process[] myProcesses;
+            myProcesses = Process.GetProcessesByName("playdar");
+            myProcesses[0].Kill();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -165,7 +185,7 @@ namespace PlaydarWin
             // Eventually we'll do something nice with the GUI again but 
             // I'm not sure what. So for now, lets just launch notepad. Leet.
 
-            System.Diagnostics.Process.Start(@"notepad.exe", @"C:\Program Files\Playdar\playdar.ini");
+            System.Diagnostics.Process.Start(@"notepad.exe", Environment.GetEnvironmentVariable("ProgramFiles") + @"\Playdar\playdar.conf");
 
             //if (File.Exists(@"C:\Program Files\Playdar\playdarconfig.exe"))
             //{
